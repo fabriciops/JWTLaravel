@@ -1,7 +1,8 @@
-    API paa estudo e futuro projeto envolvendo reconhecimento facial para condomínios.
+#**API paa estudo e futuro projeto envolvendo reconhecimento facial para condomínios - Laravel 8**.
 
-    JWT - Para autenticação
+#*JWT - Para autenticação*
     
-composer require tymon/jwt-auth:dev-develop --prefer-source
+    'composer require tymon/jwt-auth:dev-develop --prefer-source'
+
 
 
