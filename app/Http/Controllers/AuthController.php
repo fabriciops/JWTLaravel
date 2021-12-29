@@ -10,7 +10,17 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function nauthorized(){
+    /**
+     * Create a new AuthController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['login']]);
+    }
+
+    public function unauthotized(){
         return response()->json([
             'erro' => 'Is not Authorizate'
         ], 401);
@@ -57,7 +67,7 @@ class AuthController extends Controller
             $user = Auth::user();
             $array['user'] = $user;
 
-            $proprieties = Units::select(['id', 'name'])->where('id_ower', $user['id'])->get();
+            $proprieties = Units::where('id_owner', $user['id'])->get();
 
             $array['user']['proprieties'] = $proprieties;
 
@@ -67,5 +77,63 @@ class AuthController extends Controller
         }
 
         return $array;
+    }
+
+    public function login(Request $request){
+        $array = ['erro' => ''];
+
+        $validator = Validator::make($request->all(), [
+            'cpf' => 'required|digits:11',
+            'password' => 'required'
+        ]);
+
+        if(!$validator->fails()){
+
+
+            $token = Auth::attempt([
+                'cpf' => $request->cpf,
+                'password' => $request->password
+            ]);
+
+            if(!$token){
+                $array['error'] = "Ocorreu um erro interno";
+                return $array;
+            }
+
+            $array['token'] = $token;
+            $user = Auth::user();
+            $array['user'] = $user;
+
+            $proprieties = Units::select(['id', 'name'])->where('id_owner', $user['id'])->get();
+            
+            $array['user']['proprieties'] = $proprieties;
+
+        }else{
+            $array['error'] = $validator->errors()->first();
+            return $array;
+        }
+
+        return $array;
+
+    }
+    
+    public function validateToken(){
+        
+        $array = ['erro' => ''];
+
+        $user = Auth::user();
+        $array['user'] = $user;
+        $proprieties = Units::select(['id', 'name'])->where('id_owner', $user['id'])->get();
+
+        $array['user']['proprieties'] = $proprieties;
+
+        return $array;
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return response()->json(['message' => 'Successfully logged out']);
     }
 }

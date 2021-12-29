@@ -11,4 +11,9 @@ class Units extends Model
     
     public $table = 'units';
 
+    protected $fillable = [
+        'name',
+        'id_owner',
+        'id_users_live',
+    ];
 }
