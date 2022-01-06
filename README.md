@@ -1,4 +1,4 @@
-#**API J� configurada com JTW - Laravel 8**.
+#**API Já configurada com JTW - Laravel 8**.
 
 #*JWT - Para autenticação*
     
