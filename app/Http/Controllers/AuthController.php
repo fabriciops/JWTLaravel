@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Units;
-use App\Models\User;
+use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -26,7 +26,12 @@ class AuthController extends Controller
         ], 401);
     }
 
+    public function pong(){
+        return json_encode('pong');
+    }
+
     public function register(Request $request){
+        
         $array = ['erro' => ''];
 
         $validator = Validator::make($request->all(), [
@@ -49,7 +54,6 @@ class AuthController extends Controller
             $newUser->name = $name;
             $newUser->email = $email;
             $newUser->cpf = $cpf;
-            $newUser->permission = 1;
             $newUser->password = $hash;
             $newUser->save();
 
@@ -74,58 +78,42 @@ class AuthController extends Controller
 
         return $array;
     }
-
     public function login(Request $request){
+        Log::info("Tentativa de Login " . $request);
         $array = ['erro' => ''];
 
         $validator = Validator::make($request->all(), [
             'cpf' => 'required|digits:11',
             'password' => 'required'
         ]);
-
         if(!$validator->fails()){
-
-
             $token = Auth::attempt([
                 'cpf' => $request->cpf,
                 'password' => $request->password
             ]);
-
             if(!$token){
-                $array['error'] = "Ocorreu um erro interno";
+                Log::error("Usuário não autenticado, Verifique login e senha" . $request->cpf);
+                $array['error'] = "Usuário não autenticado, Verifique login e senha";
                 return $array;
             }
-
             $array['token'] = $token;
             $user = Auth::user();
             $array['user'] = $user;
-
         }else{
+            Log::error("validator Error " . $validator->errors()->first());
             $array['error'] = $validator->errors()->first();
             return $array;
         }
-
+        Log::info("Usuario logado " . $request->cpf);
         return $array;
 
     }
-    
-    public function validateToken(){
-        
-        $array = ['erro' => ''];
 
-        $user = Auth::user();
-        $array['user'] = $user;
-        $proprieties = Units::select(['id', 'name'])->where('id_owner', $user['id'])->get();
-
-        $array['user']['proprieties'] = $proprieties;
-
-        return $array;
-    }
 
     public function logout()
     {
         Auth::logout();
-
         return response()->json(['message' => 'Successfully logged out']);
     }
+    
 }

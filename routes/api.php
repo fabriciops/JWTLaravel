@@ -1,16 +1,6 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BilletController;
-use App\Http\Controllers\DocController;
-use App\Http\Controllers\FoundAndLostController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\UnitController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WallController;
-use App\Http\Controllers\WarningController;
-use App\Models\Reservations;
-use Egulias\EmailValidator\Warning\Warning;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,17 +15,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+
+Route::get('/404','AuthController@unauthotized');
+
+Route::get('/ping','AuthController@pong');
+
+// Route::get('/ping', function () {
+//     return ('pong');
+// });
+
+Route::post('/auth/login', 'AuthController@login');
+Route::post('/auth/register', 'AuthController@register');
+
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
 });
 
-Route::get('/404', [AuthController::class, 'unauthotized'])->name('login');
-
-Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/register', [AuthController::class, 'register']);
-
 Route::middleware('auth:api')->group(function(){
-    Route::post('/auth/validate', [AuthController::class, 'validateToken']);
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
-
+    Route::post('/auth/validate', 'AuthController@validateToken');
+    Route::post('/auth/logout', 'AuthController@logout');
 });

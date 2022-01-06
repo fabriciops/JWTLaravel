@@ -155,9 +155,6 @@ return [
         'jti',
     ],
 
-    // JWT_TTL=NULL REMOVE O CARA ABAIXO DO REQUIRED
-    // 'exp',
-
     /*
     |--------------------------------------------------------------------------
     | Persistent Claims
