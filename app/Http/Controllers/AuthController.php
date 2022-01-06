@@ -67,10 +67,6 @@ class AuthController extends Controller
             $user = Auth::user();
             $array['user'] = $user;
 
-            $proprieties = Units::where('id_owner', $user['id'])->get();
-
-            $array['user']['proprieties'] = $proprieties;
-
         }else{
             $array['error'] = $validator->errors()->first();
             return $array;
@@ -103,10 +99,6 @@ class AuthController extends Controller
             $array['token'] = $token;
             $user = Auth::user();
             $array['user'] = $user;
-
-            $proprieties = Units::select(['id', 'name'])->where('id_owner', $user['id'])->get();
-            
-            $array['user']['proprieties'] = $proprieties;
 
         }else{
             $array['error'] = $validator->errors()->first();
