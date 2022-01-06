@@ -1,4 +1,4 @@
-#**API paa estudo e futuro projeto envolvendo reconhecimento facial para condomínios - Laravel 8**.
+#**API J� configurada com JTW - Laravel 8**.
 
 #*JWT - Para autenticação*
     
